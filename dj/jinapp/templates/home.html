@@ -1,0 +1,126 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap-grid.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<script type="text/javascript" src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+<body>
+    <div class="container">
+      <ol class="breadcrumb my-4">
+       <li class="breadcrumb-item active">Articles</li>
+      </ol>
+  
+    <table class="table" id='data_table'>
+      <thead class="thead-dark">
+      <tr>
+         <th class="align=middle">pub_date</th>
+         <th class="align=middle">headline</th>
+         <th class="align=middle">content</th>
+         <th class="align=middle">reporter</th>
+         <th class="align=middle"><input type="checkbox" name="chkbox" value="0">AllChoose</th>
+      </tr>
+      </thead>
+    <tbody id="info_tbody">
+    {% for article in articles %}
+    <tr>
+      <td>{{ article.pub_date }}</td>
+      <td class="align=middle" >{{ article.headline }}</td>
+      <td class="align=middle" >{{ article.content }}</td>
+      <td >{{ article.reporter }}</td>
+      <th class="align=middle"><input type="checkbox" name="chkbox" value={{ article.id }} >{{ article.id }}</th>
+    </tr>    
+    {% endfor %}
+    </tbody>
+   </table>
+</body>
+<button class="btn btn-default" type="button" id="delbutton">删除</button>
+               
+<body>
+    <div class="container">
+      <ol class="breadcrumb my-4">
+       <li class="breadcrumb-item active">Reporters</li>
+      </ol>
+
+    <table class="table">
+      <thead class="thead-dark">
+      <tr>
+         <th>name</th>
+      </th>
+      </thead>
+     </tbody>
+     {% for r in reporter %}
+      <tr>
+       <td>{{ r.full_name }}</td>
+      </tr>
+     {% endfor %}
+     </tbody>
+    </table>
+   
+</body>
+<input type="text" class="form-control" name="content" id="content" placeholder="Search for...">
+<button class="btn btn-default" id="search" type="button">查找</button>
+<div id="search_content"></div>
+<script type="text/javascript">
+    $(document).ready(function(){
+            $('#search').click(function () {
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://192.168.108.146:8000/index/search/',
+                    data:{"content":$("#content").val()},
+                    success:function (results) {
+                        console.info(results);
+                        var tb=document.getElementById("data_table");
+                        var infos=document.getElementById("info_tbody");
+                        $('#info_tbody').empty();
+                        for (var i=0; i < results['articles'].length; i++){
+                            var article=results['articles'][i];
+                            var tr=document.createElement("tr");
+                            var td1=document.createElement("td");
+                            var td2=document.createElement("td");
+                            var td3=document.createElement("td");
+                            var td4=document.createElement("td");
+                            var chkinfo = document.createElement("input");
+
+                            td1.innerHTML=article['pub_date'];
+                            td2.innerHTML=article['headline'];
+                            td3.innerHTML=article['content'];
+                            td4.innerHTML=article['reporter'];
+                            chkinfo.type="checkbox";
+                            chkinfo.name="chkbox";
+                            chkinfo.value=article['id'];
+
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            tr.appendChild(chkinfo)
+                            infos.appendChild(tr)
+                            console.info(chkinfo.id)
+                    }
+                   $("#table_id info_tbody").append(infos);
+                 },
+                });
+ 
+            });
+           $('#delbutton').click(function() {
+               var checkID = new Array();
+               var id=document.getElementsByName("chkbox");
+               for(var i=0;i<id.length;i++){
+                 if(id[i].checked){
+                   checkID.push(id[i].value);
+                   }
+                 }
+               console.info(checkID);
+               $.ajax({
+                   type:'GET',
+                   url: 'http://192.168.108.146:8000/index/datachange/',          
+                   data:{'chkbox_id':checkID},
+           });
+ 
+        });
+     });
+</script>
+</html>

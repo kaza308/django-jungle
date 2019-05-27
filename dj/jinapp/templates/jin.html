@@ -1,0 +1,35 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'css/jin.css' %}">
+    <title>TEST</title>
+</head>
+<body>
+    <table class="table" id='data_table'>
+      <thead class="thead-dark">
+      <tr>
+         <th class="align=middle">pub_date</th>
+         <th class="align=middle">headline</th>
+         <th class="align=middle">content</th>
+         <th class="align=middle">reporter</th>
+         <th class="align=middle"><input type="checkbox" name="ch">AllChoose</th>
+      </tr>
+      </thead>
+    </tbody>
+    {% for article in articles %}
+    <tr>
+      <td>
+        {{ article.pub_date }}
+      </td>
+      <td class="align=middle" >{{ article.headline }}</td>
+      <td class="align=middle" >{{ article.content }}</td>
+      <td >{{ article.reporter }}</td>
+      <th class="align=middle"><input type="checkbox">{{ article.id }}</th>
+    </tr>    
+    {% endfor %}
+    </tbody>
+   </table>
+   <a href="url">Link text</a>
+</body>
+
