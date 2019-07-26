@@ -63,14 +63,46 @@
 <input type="text" class="form-control" name="content" id="content" placeholder="Search for...">
 <button class="btn btn-default" id="search" type="button">查找</button>
 <div id="search_content"></div>
-<script type="text/javascript">
+<script type="text/javascript"> 
     $(document).ready(function(){
+                    function render_data(data){
+                        console.info(data);
+                        var tb=document.getElementById("data_table");
+                        var infos=document.getElementById("info_tbody");
+                        $('#info_tbody').empty();
+                        for (var i=0; i < results['articles'].length; i++){
+                            var article=data['articles'][i];
+                            var tr=document.createElement("tr");
+                            var td1=document.createElement("td");
+                            var td2=document.createElement("td");
+                            var td3=document.createElement("td");
+                            var td4=document.createElement("td");
+                            var chkinfo = document.createElement("input");
+
+                            td1.innerHTML=article['pub_date'];
+                            td2.innerHTML=article['headline'];
+                            td3.innerHTML=article['content'];
+                            td4.innerHTML=article['reporter'];
+                            chkinfo.type="checkbox";
+                            chkinfo.name="chkbox";
+                            chkinfo.value=article['id'];
+
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            tr.appendChild(chkinfo)
+                            infos.appendChild(tr)
+                            console.info(chkinfo.id)
+                    }
+                   $("#table_id info_tbody").append(infos);
+                }
             $('#search').click(function () {
                 $.ajax({
                     type: 'GET',
                     url: 'http://192.168.108.146:8000/index/search/',
                     data:{"content":$("#content").val()},
-                    success:function (results) {
+                    success:function(results){
                         console.info(results);
                         var tb=document.getElementById("data_table");
                         var infos=document.getElementById("info_tbody");
@@ -118,6 +150,38 @@
                    type:'GET',
                    url: 'http://192.168.108.146:8000/index/datachange/',          
                    data:{'chkbox_id':checkID},
+                    success:function(results){
+                        console.info(results);
+                        var tb=document.getElementById("data_table");
+                        var infos=document.getElementById("info_tbody");
+                        $('#info_tbody').empty();
+                        for (var i=0; i < results['articles'].length; i++){
+                            var article=results['articles'][i];
+                            var tr=document.createElement("tr");
+                            var td1=document.createElement("td");
+                            var td2=document.createElement("td");
+                            var td3=document.createElement("td");
+                            var td4=document.createElement("td");
+                            var chkinfo = document.createElement("input");
+
+                            td1.innerHTML=article['pub_date'];
+                            td2.innerHTML=article['headline'];
+                            td3.innerHTML=article['content'];
+                            td4.innerHTML=article['reporter'];
+                            chkinfo.type="checkbox";
+                            chkinfo.name="chkbox";
+                            chkinfo.value=article['id'];
+
+                            tr.appendChild(td1);
+                            tr.appendChild(td2);
+                            tr.appendChild(td3);
+                            tr.appendChild(td4);
+                            tr.appendChild(chkinfo)
+                            infos.appendChild(tr)
+                            console.info(chkinfo.id)
+                    }
+                   $("#table_id info_tbody").append(infos);
+                },
            });
  
         });

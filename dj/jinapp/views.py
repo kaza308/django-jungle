@@ -24,11 +24,14 @@ def year_arc(request, year):
 
 def datachange(request):
     try:
-        content=request.GET['chkbox_id']
+        #content=request.GET['chkbox_id']
+        content=request.GET.getlist('chkbox_id[]')
     except:
         content=None
     print "content is",content
-    art = Article.objects.filter(headline=content).delete()
+    idstr=",".join(content)
+    print "content str is",idstr
+    Article.objects.extra(where=['id IN (' + idstr + ')']).delete()
     new_data = Article.objects.all()
     rep = Reporter.objects.all()
     print type(new_data),"\n",new_data,len(new_data)
