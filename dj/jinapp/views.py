@@ -28,17 +28,17 @@ def datachange(request):
         content=request.GET.getlist('chkbox_id[]')
     except:
         content=None
-    print "content is",content
+    print("content is",content)
     idstr=",".join(content)
-    print "content str is",idstr
+    print("content str is",idstr)
     Article.objects.extra(where=['id IN (' + idstr + ')']).delete()
     new_data = Article.objects.all()
     rep = Reporter.objects.all()
-    print type(new_data),"\n",new_data,len(new_data)
+    print(type(new_data),"\n",new_data,len(new_data))
     info_list=[]
     for ele in new_data:
         info_list.append({"pub_date":ele.pub_date,"headline":ele.headline,"content":ele.content,"reporter":ele.reporter.full_name,})
-    print info_list
+    print(info_list)
     return JsonResponse({"articles":info_list})
     #return render(request,'home.html',{'articles':new_data,'reporter':rep})
 def search(request):
@@ -46,15 +46,15 @@ def search(request):
         content=request.GET['content']
     except:
         content=None
-    print "content is",content
+    print("content is",content)
     art = Article.objects.filter(headline=content)
     if content=="all":
         art = Article.objects.all()
-    print art,len(art)
+    print(art,len(art))
     info_list=[]
     for ele in art:
         info_list.append({"id":ele.id,"pub_date":ele.pub_date,"headline":ele.headline,"content":ele.content,"reporter":ele.reporter.full_name,})
-    print info_list
+    print(info_list)
     return JsonResponse({"articles":info_list})
 
 def test(request):
